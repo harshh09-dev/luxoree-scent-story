@@ -253,7 +253,7 @@ function ProductPage() {
                 <div key={k}>
                   <p className="text-[11px] uppercase tracking-[0.3em] text-gold">{k === "top" ? "Top Notes" : k === "heart" ? "Heart Notes" : "Base Notes"}</p>
                   <div className="mt-4 flex flex-wrap gap-2">
-                    {p.notes[k].map((n) => (
+                    {p.notes[k].map((n: string) => (
                       <span key={n} className="rounded-sm border border-border/50 bg-surface/50 px-3 py-1.5 text-sm text-ivory/80">
                         {n}
                       </span>
