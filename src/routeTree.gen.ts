@@ -10,7 +10,6 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ShopRouteImport } from './routes/shop'
-import { Route as QuizRouteImport } from './routes/quiz'
 import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as CartRouteImport } from './routes/cart'
 import { Route as AboutRouteImport } from './routes/about'
@@ -21,11 +20,6 @@ import { Route as OrderSuccessIdRouteImport } from './routes/order-success.$id'
 const ShopRoute = ShopRouteImport.update({
   id: '/shop',
   path: '/shop',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const QuizRoute = QuizRouteImport.update({
-  id: '/quiz',
-  path: '/quiz',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CheckoutRoute = CheckoutRouteImport.update({
@@ -64,7 +58,6 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/cart': typeof CartRoute
   '/checkout': typeof CheckoutRoute
-  '/quiz': typeof QuizRoute
   '/shop': typeof ShopRouteWithChildren
   '/order-success/$id': typeof OrderSuccessIdRoute
   '/shop/$slug': typeof ShopSlugRoute
@@ -74,7 +67,6 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/cart': typeof CartRoute
   '/checkout': typeof CheckoutRoute
-  '/quiz': typeof QuizRoute
   '/shop': typeof ShopRouteWithChildren
   '/order-success/$id': typeof OrderSuccessIdRoute
   '/shop/$slug': typeof ShopSlugRoute
@@ -85,7 +77,6 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/cart': typeof CartRoute
   '/checkout': typeof CheckoutRoute
-  '/quiz': typeof QuizRoute
   '/shop': typeof ShopRouteWithChildren
   '/order-success/$id': typeof OrderSuccessIdRoute
   '/shop/$slug': typeof ShopSlugRoute
@@ -97,7 +88,6 @@ export interface FileRouteTypes {
     | '/about'
     | '/cart'
     | '/checkout'
-    | '/quiz'
     | '/shop'
     | '/order-success/$id'
     | '/shop/$slug'
@@ -107,7 +97,6 @@ export interface FileRouteTypes {
     | '/about'
     | '/cart'
     | '/checkout'
-    | '/quiz'
     | '/shop'
     | '/order-success/$id'
     | '/shop/$slug'
@@ -117,7 +106,6 @@ export interface FileRouteTypes {
     | '/about'
     | '/cart'
     | '/checkout'
-    | '/quiz'
     | '/shop'
     | '/order-success/$id'
     | '/shop/$slug'
@@ -128,7 +116,6 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   CartRoute: typeof CartRoute
   CheckoutRoute: typeof CheckoutRoute
-  QuizRoute: typeof QuizRoute
   ShopRoute: typeof ShopRouteWithChildren
   OrderSuccessIdRoute: typeof OrderSuccessIdRoute
 }
@@ -140,13 +127,6 @@ declare module '@tanstack/react-router' {
       path: '/shop'
       fullPath: '/shop'
       preLoaderRoute: typeof ShopRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/quiz': {
-      id: '/quiz'
-      path: '/quiz'
-      fullPath: '/quiz'
-      preLoaderRoute: typeof QuizRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/checkout': {
@@ -209,7 +189,6 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   CartRoute: CartRoute,
   CheckoutRoute: CheckoutRoute,
-  QuizRoute: QuizRoute,
   ShopRoute: ShopRouteWithChildren,
   OrderSuccessIdRoute: OrderSuccessIdRoute,
 }
