@@ -1,30 +1,34 @@
-import midnightOud from "@/assets/perfumes/midnight-oud.jpg";
-import royalCedar from "@/assets/perfumes/royal-cedar.jpg";
-import velvetNoir from "@/assets/perfumes/velvet-noir.jpg";
-import urbanLegend from "@/assets/perfumes/urban-legend.jpg";
-import onyxReserve from "@/assets/perfumes/onyx-reserve.jpg";
-import bloomEssence from "@/assets/perfumes/bloom-essence.jpg";
-import velvetRose from "@/assets/perfumes/velvet-rose.jpg";
-import amberSilk from "@/assets/perfumes/amber-silk.jpg";
-import peonyDusk from "@/assets/perfumes/peony-dusk.jpg";
-import ivoryMuse from "@/assets/perfumes/ivory-muse.jpg";
-import oceanBreeze from "@/assets/perfumes/ocean-breeze.jpg";
-import goldenDune from "@/assets/perfumes/golden-dune.jpg";
-import smokeVanilla from "@/assets/perfumes/smoke-vanilla.jpg";
-import whiteIris from "@/assets/perfumes/white-iris.jpg";
-import nomad from "@/assets/perfumes/nomad.jpg";
+import addictionAsset from "@/assets/perfumes/addiction.webp.asset.json";
+import afterhoursAsset from "@/assets/perfumes/afterhours.webp.asset.json";
+import blackVanillaAsset from "@/assets/perfumes/black-vanilla.webp.asset.json";
+import legacy7Asset from "@/assets/perfumes/legacy-7.webp.asset.json";
+import marineAsset from "@/assets/perfumes/marine.webp.asset.json";
+import midnightOudAsset from "@/assets/perfumes/midnight-oud.webp.asset.json";
+import perfectAsset from "@/assets/perfumes/perfect.webp.asset.json";
+import sapphireAsset from "@/assets/perfumes/sapphire.webp.asset.json";
 
 export type Gender = "men" | "women" | "unisex";
+
+export type Review = {
+  id: string;
+  name: string;
+  rating: number;
+  date: string;
+  text: string;
+  verified?: boolean;
+};
 
 export type Perfume = {
   slug: string;
   name: string;
   gender: Gender;
   tagline: string;
+  shortDescription: string;
   description: string;
   family: string;
+  mood: string[];
   notes: { top: string[]; heart: string[]; base: string[] };
-  longevity: "6–8 Hours" | "8–10 Hours";
+  longevity: "6–8 Hours" | "8–10 Hours" | "10+ Hours";
   projection: "Soft" | "Moderate" | "Strong";
   season: string[];
   occasion: string[];
@@ -35,362 +39,261 @@ export type Perfume = {
   trialPrice: number; // 20ml
   rating: number;
   reviewCount: number;
+  reviews: Review[];
   bestSeller?: boolean;
   featured?: boolean;
-  isNew?: boolean;
   image: string;
+  seo: {
+    title: string;
+    description: string;
+  };
 };
+
+const baseReviews = (slug: string): Review[] => [
+  { id: `${slug}-r1`, name: "Aarav M.", rating: 5, date: "3 days ago", verified: true,
+    text: "Incredible projection and longevity. Got compliments all night — this is my new signature." },
+  { id: `${slug}-r2`, name: "Riya S.", rating: 5, date: "1 week ago", verified: true,
+    text: "The packaging alone feels ₹3000. The scent? Genuinely premium. Worth every rupee." },
+  { id: `${slug}-r3`, name: "Kabir V.", rating: 4, date: "2 weeks ago", verified: true,
+    text: "Smells expensive without being loud. Perfect balance of warmth and freshness." },
+];
 
 export const perfumes: Perfume[] = [
   {
     slug: "midnight-oud",
     name: "Midnight Oud",
     gender: "men",
-    tagline: "Bold, mysterious, unforgettable.",
+    tagline: "The scent of a room you weren't invited to.",
+    shortDescription: "Smoked oud, saffron and dark amber — commanding, mysterious, unforgettable.",
     description:
-      "A commanding blend of rich oud and warm spices, wrapped in a veil of dark amber. Midnight Oud is a fragrance for the man who arrives without announcement — and lingers long after he leaves.",
+      "Midnight Oud opens with a bright rush of saffron and pink pepper before settling into a heart of aged oud, patchouli and rose absolute. The dry-down is pure warmth: amber, sandalwood and a whisper of leather that stays on skin for the entire night. This is a fragrance for arrivals and exits — a scent that announces you long after you've left the room.",
     family: "Woody • Oud",
+    mood: ["Confident", "Mysterious", "Nocturnal"],
     notes: {
-      top: ["Saffron", "Nutmeg", "Bergamot"],
-      heart: ["Oud", "Patchouli", "Geranium"],
-      base: ["Amber", "Musk", "Sandalwood"],
+      top: ["Saffron", "Pink Pepper", "Bergamot"],
+      heart: ["Aged Oud", "Rose Absolute", "Patchouli"],
+      base: ["Amber", "Sandalwood", "Soft Leather"],
     },
-    longevity: "8–10 Hours",
-    projection: "Strong",
+    longevity: "10+ Hours", projection: "Strong",
     season: ["Autumn", "Winter"],
-    occasion: ["Evening", "Party", "Winter dates"],
-    ingredients: "Alcohol Denat., Parfum, Aqua, natural essential oils, IFRA compliant.",
-    directions: "Spray on pulse points — wrists, neck, chest. Do not rub. Store cool, away from sunlight.",
-    price: 349, mrp: 499, trialPrice: 99,
-    rating: 4.9, reviewCount: 168, bestSeller: true, featured: true,
-    image: midnightOud,
+    occasion: ["Evening", "Date Night", "Formal"],
+    ingredients: "Alcohol Denat., Parfum (30%), Aqua, Aged Oud Oil, natural resins. IFRA 51 compliant. Cruelty-free.",
+    directions: "Two sprays on pulse points — inner wrists, base of neck, behind ears. Do not rub. For maximum longevity, spray onto moisturized skin.",
+    price: 1299, mrp: 1899, trialPrice: 349,
+    rating: 4.9, reviewCount: 187, bestSeller: true, featured: true,
+    reviews: baseReviews("midnight-oud"),
+    image: midnightOudAsset.url,
+    seo: {
+      title: "Midnight Oud — Aged Oud Eau de Parfum | Luxoree",
+      description: "Aged oud, saffron and amber. 10+ hour longevity. Strong projection. India's most-loved oud fragrance. Free delivery, cash on delivery available.",
+    },
   },
   {
-    slug: "royal-cedar",
-    name: "Royal Cedar",
+    slug: "afterhours",
+    name: "Afterhours",
     gender: "men",
-    tagline: "Woody warmth with a regal edge.",
+    tagline: "For the hours the city forgets.",
+    shortDescription: "Smoked woods, black pepper and cardamom — nocturnal, magnetic, undeniably masculine.",
     description:
-      "Fresh cedar meets smoky vetiver and creamy sandalwood. Royal Cedar is refined masculinity — the scent of quiet confidence.",
+      "Afterhours is the fragrance of the quiet after the loud — cognac warmth, smoked cedar and a heart of iris and violet leaf, dried down with vetiver and tonka. It sits close to the skin at first, then slowly unfurls into something that people lean in to notice. Wear it when you don't need to try.",
     family: "Woody • Spicy",
+    mood: ["Suave", "Nocturnal", "Refined"],
     notes: {
-      top: ["Cedar", "Cardamom", "Pink Pepper"],
-      heart: ["Vetiver", "Iris", "Cypress"],
-      base: ["Sandalwood", "Tonka", "Vanilla"],
+      top: ["Cognac Accord", "Black Pepper", "Cardamom"],
+      heart: ["Iris", "Violet Leaf", "Smoked Cedar"],
+      base: ["Vetiver", "Tonka Bean", "Ambergris"],
     },
-    longevity: "6–8 Hours",
-    projection: "Moderate",
-    season: ["All Seasons"],
-    occasion: ["Office", "Daily wear"],
-    ingredients: "Alcohol Denat., Parfum, Aqua, natural cedar oil, IFRA compliant.",
-    directions: "Two sprays on pulse points. Layer with body oil for longer wear.",
-    price: 349, mrp: 499, trialPrice: 99,
-    rating: 4.7, reviewCount: 98, bestSeller: true,
-    image: royalCedar,
+    longevity: "8–10 Hours", projection: "Moderate",
+    season: ["Autumn", "Winter", "Cool Spring"],
+    occasion: ["Evening", "Dinner", "Bar"],
+    ingredients: "Alcohol Denat., Parfum (25%), Aqua, natural essential oils. IFRA 51 compliant. Cruelty-free.",
+    directions: "Two sprays — chest and neck. Layer with an unscented body oil for a longer stay.",
+    price: 1199, mrp: 1699, trialPrice: 299,
+    rating: 4.8, reviewCount: 142, bestSeller: true,
+    reviews: baseReviews("afterhours"),
+    image: afterhoursAsset.url,
+    seo: {
+      title: "Afterhours — Smoked Woods Eau de Parfum | Luxoree",
+      description: "Cognac, smoked cedar and vetiver. An 8–10 hour nocturnal fragrance made for evening wear. Long-lasting, hand-blended in India.",
+    },
   },
   {
-    slug: "velvet-noir",
-    name: "Velvet Noir",
-    gender: "men",
+    slug: "black-vanilla",
+    name: "Black Vanilla",
+    gender: "unisex",
     tagline: "Sweet warmth wrapped in shadow.",
+    shortDescription: "Madagascar vanilla, roasted tonka and dark benzoin — a gourmand with depth.",
     description:
-      "Tonka bean and dark chocolate laced with tobacco and leather. Velvet Noir is a slow, seductive fragrance — plush, intimate, and unmistakably premium.",
-    family: "Amber • Sweet",
+      "Black Vanilla is not the vanilla you know. This is vanilla the way it exists in a whisky bar at 2AM — deep, resinous, laced with tobacco leaf and warm benzoin. Coffee bean and pink pepper cut through the sweetness at the top; the base is pure addiction: tonka, sandalwood and a soft plume of birch smoke.",
+    family: "Gourmand • Amber",
+    mood: ["Cozy", "Addictive", "Warm"],
     notes: {
-      top: ["Bergamot", "Cinnamon"],
-      heart: ["Tonka Bean", "Dark Chocolate", "Tobacco"],
-      base: ["Leather", "Amber", "Vanilla"],
+      top: ["Coffee Bean", "Pink Pepper", "Bergamot"],
+      heart: ["Madagascar Vanilla", "Tobacco Leaf", "Tonka"],
+      base: ["Benzoin", "Sandalwood", "Birch Smoke"],
     },
-    longevity: "8–10 Hours",
-    projection: "Strong",
+    longevity: "8–10 Hours", projection: "Strong",
     season: ["Autumn", "Winter"],
-    occasion: ["Date night", "Evening"],
-    ingredients: "Alcohol Denat., Parfum, Aqua, IFRA compliant.",
-    directions: "One or two sprays are enough — this fragrance is intense.",
-    price: 349, mrp: 499, trialPrice: 99,
-    rating: 4.6, reviewCount: 76, featured: true,
-    image: velvetNoir,
+    occasion: ["Date Night", "Cozy Evenings", "Weekend"],
+    ingredients: "Alcohol Denat., Parfum (27%), Aqua, Madagascar vanilla absolute, natural resins. IFRA 51 compliant. Cruelty-free.",
+    directions: "One or two sprays are enough — Black Vanilla carries. Best on skin after a warm shower.",
+    price: 1249, mrp: 1799, trialPrice: 349,
+    rating: 4.9, reviewCount: 208, bestSeller: true, featured: true,
+    reviews: baseReviews("black-vanilla"),
+    image: blackVanillaAsset.url,
+    seo: {
+      title: "Black Vanilla — Gourmand Eau de Parfum | Luxoree",
+      description: "Madagascar vanilla, tobacco leaf and benzoin. A rich, addictive gourmand for cool weather. 8–10 hours. Free delivery in India.",
+    },
   },
   {
-    slug: "urban-legend",
-    name: "Urban Legend",
+    slug: "legacy-7",
+    name: "Legacy-7",
     gender: "men",
-    tagline: "Smoked leather. City lights.",
+    tagline: "Seven notes. One long-standing signature.",
+    shortDescription: "Bergamot, oud wood and amber — a modern classic built to be worn every day.",
     description:
-      "Charcoal-smoked leather, black pepper and a whisper of iris. Urban Legend is the scent of late-night walks through empty city streets — cool, sharp, alive.",
-    family: "Leather • Smoky",
+      "Legacy-7 is the fragrance you reach for on the mornings that matter. Bright bergamot and lemon at the opening give way to a heart of geranium, oud wood and cardamom, drying down to amber, cedar and clean musk. It's confident without shouting — the scent of someone who's been doing this for a while.",
+    family: "Aromatic • Woody",
+    mood: ["Classic", "Professional", "Timeless"],
     notes: {
-      top: ["Black Pepper", "Grapefruit"],
-      heart: ["Leather", "Iris", "Violet"],
-      base: ["Smoked Wood", "Musk", "Ambergris"],
+      top: ["Bergamot", "Sicilian Lemon", "Ginger"],
+      heart: ["Geranium", "Oud Wood", "Cardamom"],
+      base: ["Amber", "Cedar", "White Musk"],
     },
-    longevity: "6–8 Hours",
-    projection: "Moderate",
-    season: ["Autumn", "Winter", "Spring"],
-    occasion: ["Casual", "Weekend"],
-    ingredients: "Alcohol Denat., Parfum, Aqua, IFRA compliant.",
-    directions: "Spray on clothing and pulse points for the smokiest projection.",
-    price: 349, mrp: 499, trialPrice: 99,
-    rating: 4.5, reviewCount: 54, isNew: true,
-    image: urbanLegend,
-  },
-  {
-    slug: "onyx-reserve",
-    name: "Onyx Reserve",
-    gender: "men",
-    tagline: "Rare, dense, distinguished.",
-    description:
-      "The house's most intense masculine composition. Deep resins, precious woods and a heart of black orchid. Reserved for the rarest of moments.",
-    family: "Oriental • Woody",
-    notes: {
-      top: ["Elemi", "Bergamot"],
-      heart: ["Black Orchid", "Rose Absolute", "Frankincense"],
-      base: ["Oud", "Amber Resin", "Musk"],
-    },
-    longevity: "8–10 Hours",
-    projection: "Strong",
-    season: ["Winter"],
-    occasion: ["Formal", "Special evenings"],
-    ingredients: "Alcohol Denat., Parfum, Aqua, natural resins, IFRA compliant.",
-    directions: "One spray. Trust it.",
-    price: 349, mrp: 499, trialPrice: 99,
-    rating: 4.8, reviewCount: 89,
-    image: onyxReserve,
-  },
-  {
-    slug: "bloom-essence",
-    name: "Bloom Essence",
-    gender: "women",
-    tagline: "Floral, radiant, forever in bloom.",
-    description:
-      "A sunlit bouquet of peony, rose and jasmine, softened by musk and warm woods. Bloom Essence is femininity in full flower — bright, generous, alive.",
-    family: "Floral • Fresh",
-    notes: {
-      top: ["Peony", "Pear", "Bergamot"],
-      heart: ["Rose", "Jasmine", "Lily"],
-      base: ["White Musk", "Cedarwood", "Amber"],
-    },
-    longevity: "6–8 Hours",
-    projection: "Moderate",
-    season: ["Spring", "Summer"],
-    occasion: ["Daily wear", "Brunch", "Daytime"],
-    ingredients: "Alcohol Denat., Parfum, Aqua, natural florals, IFRA compliant.",
-    directions: "Spray on wrists and neck. Let the top notes settle.",
-    price: 349, mrp: 499, trialPrice: 99,
-    rating: 4.8, reviewCount: 210, bestSeller: true, featured: true,
-    image: bloomEssence,
-  },
-  {
-    slug: "velvet-rose",
-    name: "Velvet Rose",
-    gender: "women",
-    tagline: "Dark rose. Deep desire.",
-    description:
-      "Bulgarian rose absolute layered over raspberry, saffron and oud. Velvet Rose is romantic without ever being sweet — a fragrance with a pulse.",
-    family: "Floral • Oriental",
-    notes: {
-      top: ["Raspberry", "Saffron"],
-      heart: ["Bulgarian Rose", "Turkish Rose", "Violet"],
-      base: ["Oud", "Patchouli", "Musk"],
-    },
-    longevity: "8–10 Hours",
-    projection: "Strong",
-    season: ["Autumn", "Winter"],
-    occasion: ["Date night", "Evening"],
-    ingredients: "Alcohol Denat., Parfum, Aqua, rose absolute, IFRA compliant.",
-    directions: "Spray, do not rub. Let the rose bloom.",
-    price: 349, mrp: 499, trialPrice: 99,
-    rating: 4.9, reviewCount: 145, bestSeller: true,
-    image: velvetRose,
-  },
-  {
-    slug: "amber-silk",
-    name: "Amber Silk",
-    gender: "women",
-    tagline: "Warm amber wrapped in silk.",
-    description:
-      "Honey, amber and vanilla poured over creamy sandalwood. Amber Silk is a warm-skin fragrance — golden, close, and endlessly wearable.",
-    family: "Amber • Warm",
-    notes: {
-      top: ["Honey", "Mandarin"],
-      heart: ["Amber", "Benzoin", "Iris"],
-      base: ["Sandalwood", "Vanilla", "Tonka"],
-    },
-    longevity: "8–10 Hours",
-    projection: "Moderate",
-    season: ["Autumn", "Winter"],
-    occasion: ["Evening", "Cozy nights"],
-    ingredients: "Alcohol Denat., Parfum, Aqua, amber resin, IFRA compliant.",
-    directions: "Layer on skin. Perfect after a shower.",
-    price: 349, mrp: 499, trialPrice: 99,
-    rating: 4.7, reviewCount: 132,
-    image: amberSilk,
-  },
-  {
-    slug: "peony-dusk",
-    name: "Peony Dusk",
-    gender: "women",
-    tagline: "The hour just before nightfall.",
-    description:
-      "Fresh peony, dewy magnolia and a whisper of pink pepper, drying down to soft cashmeran. Peony Dusk is delicate but never quiet.",
-    family: "Floral • Fresh",
-    notes: {
-      top: ["Pink Pepper", "Pear"],
-      heart: ["Peony", "Magnolia", "Freesia"],
-      base: ["Cashmeran", "White Musk", "Cedar"],
-    },
-    longevity: "6–8 Hours",
-    projection: "Soft",
-    season: ["Spring"],
-    occasion: ["Daily wear", "Office"],
-    ingredients: "Alcohol Denat., Parfum, Aqua, IFRA compliant.",
-    directions: "Two or three sprays on pulse points and hair.",
-    price: 349, mrp: 499, trialPrice: 99,
-    rating: 4.6, reviewCount: 88, isNew: true,
-    image: peonyDusk,
-  },
-  {
-    slug: "ivory-muse",
-    name: "Ivory Muse",
-    gender: "women",
-    tagline: "Cream. Cashmere. Quiet luxury.",
-    description:
-      "Iris butter, magnolia and white musk on a soft bed of vanilla and sandalwood. Ivory Muse is the fragrance equivalent of a cashmere scarf — refined, understated, unforgettable.",
-    family: "Floral • Musk",
-    notes: {
-      top: ["Magnolia", "Bergamot"],
-      heart: ["Iris", "Orris", "Tuberose"],
-      base: ["Vanilla", "Sandalwood", "White Musk"],
-    },
-    longevity: "6–8 Hours",
-    projection: "Soft",
+    longevity: "8–10 Hours", projection: "Moderate",
     season: ["All Seasons"],
-    occasion: ["Office", "Everyday elegance"],
-    ingredients: "Alcohol Denat., Parfum, Aqua, iris butter, IFRA compliant.",
-    directions: "Spray generously — Ivory Muse sits close to the skin.",
-    price: 349, mrp: 499, trialPrice: 99,
-    rating: 4.7, reviewCount: 104,
-    image: ivoryMuse,
+    occasion: ["Office", "Meetings", "Daily Wear"],
+    ingredients: "Alcohol Denat., Parfum (24%), Aqua, natural bergamot and cedar oils. IFRA 51 compliant.",
+    directions: "Two sprays on pulse points before dressing. Reapply once at midday if needed.",
+    price: 1149, mrp: 1599, trialPrice: 299,
+    rating: 4.7, reviewCount: 124, featured: true,
+    reviews: baseReviews("legacy-7"),
+    image: legacy7Asset.url,
+    seo: {
+      title: "Legacy-7 — Everyday Aromatic Eau de Parfum | Luxoree",
+      description: "Bergamot, oud wood and amber. A refined all-day fragrance for professional wear. 8–10 hours longevity. Cash on delivery available.",
+    },
   },
   {
-    slug: "ocean-breeze",
-    name: "Ocean Breeze",
+    slug: "marine",
+    name: "Marine",
     gender: "unisex",
-    tagline: "Salt air. Blue horizon.",
+    tagline: "Salt air. Blue horizon. First light.",
+    shortDescription: "Sea salt, neroli and driftwood — clean, fresh, unmistakably premium.",
     description:
-      "Sea salt, bergamot and neroli lifted by driftwood and clean musks. Ocean Breeze is that first morning by the water — fresh, weightless, alive.",
+      "Marine bottles the first fifteen minutes of a morning by the water. Sea salt, mint and grapefruit open the composition with a cool clarity, followed by a heart of neroli, lavender and jasmine. The base of driftwood, ambergris and white musk gives it the depth that separates a premium marine from a cheap aquatic — this is the good kind.",
     family: "Aquatic • Fresh",
+    mood: ["Fresh", "Uplifting", "Clean"],
     notes: {
-      top: ["Sea Salt", "Bergamot", "Grapefruit"],
-      heart: ["Neroli", "Marine Accord", "Jasmine"],
-      base: ["Driftwood", "White Musk", "Ambergris"],
+      top: ["Sea Salt", "Mint", "Pink Grapefruit"],
+      heart: ["Neroli", "Lavender", "Jasmine"],
+      base: ["Driftwood", "Ambergris", "White Musk"],
     },
-    longevity: "6–8 Hours",
-    projection: "Moderate",
+    longevity: "6–8 Hours", projection: "Moderate",
     season: ["Spring", "Summer"],
-    occasion: ["Daily wear", "Travel"],
-    ingredients: "Alcohol Denat., Parfum, Aqua, IFRA compliant.",
-    directions: "Spray liberally. Reapply after long days.",
-    price: 349, mrp: 499, trialPrice: 99,
-    rating: 4.8, reviewCount: 124, bestSeller: true, featured: true,
-    image: oceanBreeze,
+    occasion: ["Daily Wear", "Travel", "Beach", "Office"],
+    ingredients: "Alcohol Denat., Parfum (22%), Aqua, natural neroli oil, marine accord. IFRA 51 compliant.",
+    directions: "Three sprays — chest, neck, wrists. Reapply mid-afternoon in summer heat.",
+    price: 1099, mrp: 1499, trialPrice: 249,
+    rating: 4.7, reviewCount: 156,
+    reviews: baseReviews("marine"),
+    image: marineAsset.url,
+    seo: {
+      title: "Marine — Fresh Aquatic Eau de Parfum | Luxoree",
+      description: "Sea salt, neroli and driftwood. A clean, premium aquatic for spring and summer. 6–8 hour wear. Long-lasting, hand-blended in India.",
+    },
   },
   {
-    slug: "golden-dune",
-    name: "Golden Dune",
+    slug: "sapphire",
+    name: "Sapphire",
     gender: "unisex",
-    tagline: "Warm sand. Golden hour.",
+    tagline: "Cool, cut, unmistakable.",
+    shortDescription: "Cardamom, iris and blue cypress — sharp, refined, quietly magnetic.",
     description:
-      "Sun-baked amber, dry woods and a hint of tobacco. Golden Dune is a warm, sensual fragrance that wears equally beautifully on any skin.",
-    family: "Amber • Woody",
+      "Sapphire is the fragrance of clean lines and cold light. Cardamom and pink pepper cut through the opening, followed by iris butter, blue cypress and a whisper of geranium. The dry-down settles into ambroxan, cashmere musk and pale wood — a modern architecture of a scent that reads as expensive from three feet away.",
+    family: "Woody • Aromatic",
+    mood: ["Modern", "Cool", "Understated"],
     notes: {
-      top: ["Amber", "Cardamom"],
-      heart: ["Tobacco Leaf", "Iris", "Suede"],
-      base: ["Sandalwood", "Vanilla", "Musk"],
+      top: ["Cardamom", "Pink Pepper", "Mandarin"],
+      heart: ["Iris Butter", "Blue Cypress", "Geranium"],
+      base: ["Ambroxan", "Cashmere Musk", "Pale Wood"],
     },
-    longevity: "8–10 Hours",
-    projection: "Moderate",
+    longevity: "8–10 Hours", projection: "Moderate",
+    season: ["All Seasons"],
+    occasion: ["Office", "Daily Wear", "Casual Dinner"],
+    ingredients: "Alcohol Denat., Parfum (25%), Aqua, iris butter, ambroxan. IFRA 51 compliant. Cruelty-free.",
+    directions: "Two sprays on pulse points. Sapphire projects at arm's length — no need to overspray.",
+    price: 1199, mrp: 1699, trialPrice: 299,
+    rating: 4.8, reviewCount: 134, featured: true,
+    reviews: baseReviews("sapphire"),
+    image: sapphireAsset.url,
+    seo: {
+      title: "Sapphire — Iris & Cypress Eau de Parfum | Luxoree",
+      description: "Cardamom, iris butter and ambroxan. A modern, refined signature for daily wear. Long-lasting 8–10 hours. Premium fragrance made in India.",
+    },
+  },
+  {
+    slug: "perfect",
+    name: "Perfect",
+    gender: "women",
+    tagline: "The one you'll wear on the day everything matters.",
+    shortDescription: "Peony, jasmine sambac and cashmere musk — romantic, radiant, effortlessly feminine.",
+    description:
+      "Perfect is a bright bouquet of peony and Italian bergamot, a heart of jasmine sambac and Bulgarian rose, drying down to cashmere musk, blonde woods and a hint of vanilla. It is the fragrance equivalent of a perfectly cut white silk dress — quietly, unmistakably beautiful.",
+    family: "Floral • Musk",
+    mood: ["Romantic", "Radiant", "Feminine"],
+    notes: {
+      top: ["Peony", "Italian Bergamot", "Pear"],
+      heart: ["Jasmine Sambac", "Bulgarian Rose", "Magnolia"],
+      base: ["Cashmere Musk", "Blonde Woods", "Vanilla Bourbon"],
+    },
+    longevity: "8–10 Hours", projection: "Moderate",
+    season: ["Spring", "Summer", "Autumn"],
+    occasion: ["Date Night", "Weddings", "Daily Wear"],
+    ingredients: "Alcohol Denat., Parfum (26%), Aqua, jasmine sambac absolute, rose oil. IFRA 51 compliant.",
+    directions: "Two sprays on pulse points. Spritz once into hair for a soft trail.",
+    price: 1249, mrp: 1799, trialPrice: 349,
+    rating: 4.9, reviewCount: 219, bestSeller: true, featured: true,
+    reviews: baseReviews("perfect"),
+    image: perfectAsset.url,
+    seo: {
+      title: "Perfect — Jasmine & Rose Eau de Parfum | Luxoree",
+      description: "Peony, jasmine sambac and cashmere musk. A radiant floral for romantic wear. 8–10 hours. India's favourite feminine fragrance.",
+    },
+  },
+  {
+    slug: "addiction",
+    name: "Addiction",
+    gender: "women",
+    tagline: "Sweet, dark, and impossible to walk past.",
+    shortDescription: "Bulgarian rose, saffron and vanilla — sensual, warm, deeply addictive.",
+    description:
+      "Addiction opens with saffron, raspberry and a spike of pink pepper before revealing a heart of Bulgarian rose, ylang-ylang and orange blossom. The base is what earns its name — vanilla, patchouli, benzoin and a soft plume of oud. Wear when you want to be remembered.",
+    family: "Floral • Amber",
+    mood: ["Sensual", "Bold", "Addictive"],
+    notes: {
+      top: ["Saffron", "Raspberry", "Pink Pepper"],
+      heart: ["Bulgarian Rose", "Ylang-Ylang", "Orange Blossom"],
+      base: ["Vanilla", "Patchouli", "Benzoin", "Oud"],
+    },
+    longevity: "10+ Hours", projection: "Strong",
     season: ["Autumn", "Winter"],
-    occasion: ["Evening", "Travel"],
-    ingredients: "Alcohol Denat., Parfum, Aqua, IFRA compliant.",
-    directions: "Spray on pulse points. Warms with body heat.",
-    price: 349, mrp: 499, trialPrice: 99,
-    rating: 4.7, reviewCount: 91,
-    image: goldenDune,
-  },
-  {
-    slug: "smoke-and-vanilla",
-    name: "Smoke & Vanilla",
-    gender: "unisex",
-    tagline: "Cozy, smoky, comforting.",
-    description:
-      "Madagascar vanilla threaded with birch smoke, tonka and coffee. Smoke & Vanilla is a modern gourmand — warm, addictive, unisex.",
-    family: "Gourmand • Smoky",
-    notes: {
-      top: ["Coffee", "Pink Pepper"],
-      heart: ["Vanilla Bean", "Birch Smoke", "Tonka"],
-      base: ["Cedar", "Benzoin", "Musk"],
+    occasion: ["Date Night", "Evening", "Special Occasions"],
+    ingredients: "Alcohol Denat., Parfum (28%), Aqua, Bulgarian rose absolute, oud. IFRA 51 compliant.",
+    directions: "One spray is enough — Addiction is intense. Two if you want to be impossible to forget.",
+    price: 1299, mrp: 1899, trialPrice: 349,
+    rating: 4.9, reviewCount: 176, bestSeller: true,
+    reviews: baseReviews("addiction"),
+    image: addictionAsset.url,
+    seo: {
+      title: "Addiction — Rose, Saffron & Vanilla Eau de Parfum | Luxoree",
+      description: "Saffron, Bulgarian rose and vanilla. A sensual, long-lasting fragrance for evening wear. 10+ hours longevity. Free delivery in India.",
     },
-    longevity: "8–10 Hours",
-    projection: "Strong",
-    season: ["Autumn", "Winter"],
-    occasion: ["Evening", "Cozy nights"],
-    ingredients: "Alcohol Denat., Parfum, Aqua, IFRA compliant.",
-    directions: "Two sprays. This one carries.",
-    price: 349, mrp: 499, trialPrice: 99,
-    rating: 4.9, reviewCount: 178, bestSeller: true,
-    image: smokeVanilla,
-  },
-  {
-    slug: "white-iris",
-    name: "White Iris",
-    gender: "unisex",
-    tagline: "Cool iris. Powdered elegance.",
-    description:
-      "Powdery iris, green violet leaf and a soft ambrette seed base. White Iris is understated luxury — the kind of scent someone leans in to ask about.",
-    family: "Floral • Powdery",
-    notes: {
-      top: ["Violet Leaf", "Bergamot"],
-      heart: ["Iris", "Orris Butter", "Neroli"],
-      base: ["Ambrette Seed", "White Musk", "Cedar"],
-    },
-    longevity: "6–8 Hours",
-    projection: "Soft",
-    season: ["Spring", "Summer"],
-    occasion: ["Office", "Daily wear"],
-    ingredients: "Alcohol Denat., Parfum, Aqua, IFRA compliant.",
-    directions: "Spray on clothing and skin. Best on cool days.",
-    price: 349, mrp: 499, trialPrice: 99,
-    rating: 4.6, reviewCount: 72,
-    image: whiteIris,
-  },
-  {
-    slug: "nomad",
-    name: "Nomad",
-    gender: "unisex",
-    tagline: "Leather, spice, worn roads.",
-    description:
-      "Suede-soft leather, saffron and dried fruits over a base of amber and myrrh. Nomad is a traveler's fragrance — warm, wanderlust, well-worn.",
-    family: "Leather • Amber",
-    notes: {
-      top: ["Saffron", "Cinnamon", "Cardamom"],
-      heart: ["Leather", "Dried Fig", "Rose"],
-      base: ["Amber", "Myrrh", "Sandalwood"],
-    },
-    longevity: "8–10 Hours",
-    projection: "Strong",
-    season: ["Autumn", "Winter"],
-    occasion: ["Travel", "Evening"],
-    ingredients: "Alcohol Denat., Parfum, Aqua, IFRA compliant.",
-    directions: "Layer on skin and clothing for the full leather story.",
-    price: 349, mrp: 499, trialPrice: 99,
-    rating: 4.8, reviewCount: 116, isNew: true,
-    image: nomad,
   },
 ];
 
 export const bySlug = (slug: string) => perfumes.find((p) => p.slug === slug);
 export const bestSellers = () => perfumes.filter((p) => p.bestSeller);
 export const featured = () => perfumes.filter((p) => p.featured);
-export const newArrivals = () => perfumes.filter((p) => p.isNew);
 export const byGender = (g: Gender) => perfumes.filter((p) => p.gender === g);

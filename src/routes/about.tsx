@@ -1,80 +1,83 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import heroBottle from "@/assets/perfumes/hero-bottle.jpg";
+import { createFileRoute } from "@tanstack/react-router";
+import { Instagram, Mail, MessageCircle, MapPin } from "lucide-react";
 import { Reveal } from "@/components/site/Reveal";
-import { Leaf, Droplets, Heart, ShieldCheck } from "lucide-react";
+import { SITE } from "@/lib/site";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
-      { title: "About Luxoree — Handcrafted Perfumes, Made in India" },
-      { name: "description", content: "Luxoree makes luxury-inspired handcrafted perfumes at everyday prices. Premium oils, small-batch production, made in India." },
-      { property: "og:title", content: "About Luxoree" },
-      { property: "og:description", content: "Handcrafted luxury perfumes at everyday prices, made in India." },
+      { title: "About Luxorée — Hand-Blended Fragrances from Jaipur" },
+      { name: "description", content: "Founded by Naman Sharma in Jaipur. Luxorée hand-blends premium Eau de Parfums with 25–30% parfum concentration." },
+      { property: "og:title", content: "About Luxorée" },
+      { property: "og:description", content: "Hand-blended luxury fragrances made in Jaipur, India." },
+      { property: "og:url", content: `${SITE.domain}/about` },
     ],
+    links: [{ rel: "canonical", href: `${SITE.domain}/about` }],
   }),
   component: AboutPage,
 });
 
 function AboutPage() {
   return (
-    <div>
-      <section className="relative overflow-hidden py-24 md:py-32">
-        <div className="pointer-events-none absolute inset-0 bg-radial-gold opacity-40" aria-hidden />
-        <div className="container-luxe relative grid gap-12 md:grid-cols-2 md:items-center">
-          <Reveal>
-            <p className="text-[11px] uppercase tracking-[0.35em] text-gold">Our Story</p>
-            <h1 className="mt-3 font-display text-5xl leading-[1.05] text-ivory md:text-7xl">
-              Luxury,<br /><span className="gold-gradient-text italic">rewritten.</span>
-            </h1>
-            <p className="mt-6 max-w-md text-base leading-relaxed text-ivory/75">
-              Luxoree was born from a simple frustration: why should extraordinary fragrance
-              cost extraordinary money? We source the same premium oils used by legacy
-              houses, hand-blend them in small batches, and cut out everything you don't need
-              — the marble counters, the marketing airtime, the middlemen.
-            </p>
-            <p className="mt-4 max-w-md text-base leading-relaxed text-ivory/75">
-              What's left is the fragrance itself. Fifteen of them. All at ₹349 for 50ml.
-            </p>
-          </Reveal>
-          <Reveal delay={0.2}>
-            <div className="relative">
-              <div className="absolute -inset-10 bg-radial-gold blur-3xl" aria-hidden />
-              <img src={heroBottle} alt="Luxoree signature bottle" className="relative mx-auto max-h-[70dvh] w-auto drop-shadow-[0_40px_60px_rgba(0,0,0,0.6)]" />
-            </div>
-          </Reveal>
-        </div>
-      </section>
+    <div className="container-luxe py-20 md:py-32">
+      <Reveal>
+        <p className="text-[11px] uppercase tracking-[0.4em] text-gold">Our Story</p>
+        <h1 className="mt-3 max-w-3xl font-display text-5xl leading-[1.05] text-ivory md:text-7xl">
+          Luxury shouldn't be a<br /> luxury.
+        </h1>
+        <p className="mt-8 max-w-2xl text-lg leading-relaxed text-ivory/75">
+          Luxorée was founded in Jaipur by {SITE.owner.name} with one belief:
+          the fragrances that make you feel most yourself shouldn't cost a week's salary.
+          We compose our juice at the same 25–30% parfum concentration you'd find in a
+          niche house — but skip the ad spend, the department-store rent, and the
+          middlemen. What you pay for is the scent.
+        </p>
+      </Reveal>
 
-      <section className="container-luxe pb-24 md:pb-32">
-        <div className="grid grid-cols-2 gap-px overflow-hidden rounded-sm border border-border/40 bg-border/40 md:grid-cols-4">
-          {[
-            { icon: Leaf, t: "Small Batch", s: "Every bottle hand-poured" },
-            { icon: Droplets, t: "Premium Oils", s: "IFRA-compliant blends" },
-            { icon: Heart, t: "Made in India", s: "Proudly local" },
-            { icon: ShieldCheck, t: "Skin Safe", s: "Dermatologically tested" },
-          ].map((it) => (
-            <div key={it.t} className="flex flex-col items-start gap-3 bg-background p-8">
-              <div className="grid h-11 w-11 place-items-center rounded-full border border-gold/40 text-gold">
-                <it.icon className="h-5 w-5" />
-              </div>
-              <div className="font-display text-xl text-ivory">{it.t}</div>
-              <div className="text-sm text-ivory/60">{it.s}</div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="container-luxe pb-32">
-        <Reveal>
-          <div className="rounded-sm border border-gold/30 bg-gradient-to-br from-elevated to-surface p-10 text-center md:p-16">
-            <h2 className="font-display text-3xl text-ivory md:text-5xl">Live <span className="gold-gradient-text italic">luxuriously.</span></h2>
-            <p className="mx-auto mt-4 max-w-md text-base text-ivory/70">Every day is worth wearing a fragrance you love.</p>
-            <Link to="/shop" className="mt-8 inline-block rounded-sm bg-gold px-8 py-3.5 text-xs font-semibold uppercase tracking-[0.25em] text-background hover:bg-gold-soft">
-              Explore the Collection
-            </Link>
+      <div className="mt-16 grid gap-10 border-y border-border/40 py-14 md:grid-cols-3">
+        {[
+          { n: "01", t: "Small-batch", d: "Every 500ml batch is composed and matured in our Jaipur atelier over 4–6 weeks." },
+          { n: "02", t: "Skin-safe", d: "Every note meets IFRA-51 international skin-safety standards. Cruelty-free." },
+          { n: "03", t: "Honest pricing", d: "Direct-to-you pricing — no distributor markup, no celebrity endorsements." },
+        ].map((p) => (
+          <div key={p.n}>
+            <div className="font-display text-4xl text-gold/60">{p.n}</div>
+            <h3 className="mt-3 font-display text-2xl text-ivory">{p.t}</h3>
+            <p className="mt-2 text-sm leading-relaxed text-ivory/65">{p.d}</p>
           </div>
-        </Reveal>
-      </section>
+        ))}
+      </div>
+
+      <div className="mt-16">
+        <p className="text-[11px] uppercase tracking-[0.4em] text-gold">Founder & Contact</p>
+        <h2 className="mt-3 font-display text-4xl text-ivory md:text-5xl">Get in touch.</h2>
+        <div className="mt-8 grid gap-4 md:grid-cols-2">
+          <ContactCard icon={MessageCircle} label="WhatsApp" value={SITE.owner.phone} href={SITE.owner.whatsappUrl} />
+          <ContactCard icon={Mail} label="Email" value={SITE.owner.email} href={`mailto:${SITE.owner.email}`} />
+          <ContactCard icon={Instagram} label="Instagram" value={`@${SITE.owner.instagramHandle}`} href={SITE.owner.instagramUrl} />
+          <ContactCard icon={MapPin} label="Atelier" value={SITE.owner.location} />
+        </div>
+      </div>
     </div>
   );
+}
+
+function ContactCard({
+  icon: Icon, label, value, href,
+}: {
+  icon: React.ComponentType<{ className?: string }>;
+  label: string;
+  value: string;
+  href?: string;
+}) {
+  const inner = (
+    <div className="flex items-start gap-4 rounded-sm border border-border/50 bg-surface/40 p-5 transition-colors hover:border-gold/60">
+      <Icon className="mt-0.5 h-5 w-5 text-gold" />
+      <div>
+        <p className="text-[10px] uppercase tracking-[0.25em] text-gold">{label}</p>
+        <p className="mt-1 text-lg text-ivory">{value}</p>
+      </div>
+    </div>
+  );
+  return href ? <a href={href} target={href.startsWith("http") ? "_blank" : undefined} rel="noreferrer">{inner}</a> : inner;
 }
