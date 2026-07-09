@@ -1,18 +1,27 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Search, SlidersHorizontal } from "lucide-react";
+import { z } from "zod";
+import { Search } from "lucide-react";
 import { perfumes, type Gender } from "@/data/perfumes";
 import { ProductCard } from "@/components/site/ProductCard";
 import { Reveal } from "@/components/site/Reveal";
+import { SITE } from "@/lib/site";
+
+const shopSearch = z.object({
+  g: z.enum(["all", "men", "women", "unisex"]).optional().catch("all"),
+}).catch({ g: "all" });
 
 export const Route = createFileRoute("/shop")({
+  validateSearch: shopSearch,
   head: () => ({
     meta: [
-      { title: "Shop All Fragrances — Luxoree" },
-      { name: "description", content: "Browse all 15 Luxoree perfumes for men, women and unisex. Long lasting premium fragrances from ₹349." },
-      { property: "og:title", content: "Shop All Fragrances — Luxoree" },
-      { property: "og:description", content: "Discover 15 handcrafted premium perfumes. Free delivery within 3km." },
+      { title: "Shop All Fragrances — Luxorée" },
+      { name: "description", content: "Browse all 8 hand-blended Luxorée Eau de Parfums. 8–10 hour longevity, free delivery over ₹999, cash on delivery." },
+      { property: "og:title", content: "Shop All Fragrances — Luxorée" },
+      { property: "og:description", content: "Eight signature fragrances, hand-blended in India." },
+      { property: "og:url", content: `${SITE.domain}/shop` },
     ],
+    links: [{ rel: "canonical", href: `${SITE.domain}/shop` }],
   }),
   component: ShopPage,
 });
@@ -20,7 +29,10 @@ export const Route = createFileRoute("/shop")({
 type Sort = "popularity" | "price-asc" | "price-desc" | "rating";
 
 function ShopPage() {
-  const [tab, setTab] = useState<"all" | Gender>("all");
+  const { g } = Route.useSearch();
+  const navigate = Route.useNavigate();
+  const tab: "all" | Gender = g ?? "all";
+  const setTab = (k: "all" | Gender) => navigate({ search: { g: k } });
   const [sort, setSort] = useState<Sort>("popularity");
   const [q, setQ] = useState("");
 
@@ -45,8 +57,8 @@ function ShopPage() {
 
   const tabs: { k: "all" | Gender; label: string; count: number }[] = [
     { k: "all", label: "All", count: perfumes.length },
-    { k: "men", label: "Men", count: perfumes.filter((p) => p.gender === "men").length },
-    { k: "women", label: "Women", count: perfumes.filter((p) => p.gender === "women").length },
+    { k: "men", label: "For Him", count: perfumes.filter((p) => p.gender === "men").length },
+    { k: "women", label: "For Her", count: perfumes.filter((p) => p.gender === "women").length },
     { k: "unisex", label: "Unisex", count: perfumes.filter((p) => p.gender === "unisex").length },
   ];
 
@@ -54,15 +66,15 @@ function ShopPage() {
     <div className="container-luxe py-16 md:py-24">
       <Reveal>
         <div className="border-b border-border/40 pb-10">
-          <p className="text-[11px] uppercase tracking-[0.35em] text-gold">The Collection</p>
-          <h1 className="mt-3 font-display text-5xl text-ivory md:text-7xl">Our Fragrances</h1>
+          <p className="text-[11px] uppercase tracking-[0.4em] text-gold">The Collection</p>
+          <h1 className="mt-3 font-display text-5xl text-ivory md:text-7xl">Eight Signatures.</h1>
           <p className="mt-4 max-w-xl text-base text-ivory/65">
-            Fifteen handcrafted perfumes. Every note chosen with intent. Made for every mood and every moment.
+            Hand-blended Eau de Parfums, 25–30% concentration, 8–10 hour wear.
+            Made in Jaipur — shipped across India.
           </p>
         </div>
       </Reveal>
 
-      {/* Controls */}
       <div className="sticky top-16 z-30 mt-8 -mx-4 border-b border-border/40 bg-background/85 px-4 py-4 backdrop-blur md:top-20">
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div className="flex flex-wrap gap-2">
@@ -92,25 +104,21 @@ function ShopPage() {
                 className="w-full rounded-sm border border-border bg-background/60 py-2.5 pl-10 pr-3 text-sm text-ivory placeholder:text-ivory/40 focus:border-gold focus:outline-none"
               />
             </label>
-            <div className="relative">
-              <SlidersHorizontal className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ivory/50" />
-              <select
-                value={sort}
-                onChange={(e) => setSort(e.target.value as Sort)}
-                aria-label="Sort"
-                className="appearance-none rounded-sm border border-border bg-background/60 py-2.5 pl-10 pr-8 text-sm text-ivory focus:border-gold focus:outline-none"
-              >
-                <option value="popularity">Popularity</option>
-                <option value="price-asc">Price ↑</option>
-                <option value="price-desc">Price ↓</option>
-                <option value="rating">Rating</option>
-              </select>
-            </div>
+            <select
+              value={sort}
+              onChange={(e) => setSort(e.target.value as Sort)}
+              aria-label="Sort"
+              className="rounded-sm border border-border bg-background/60 px-3 py-2.5 text-sm text-ivory focus:border-gold focus:outline-none"
+            >
+              <option value="popularity">Popularity</option>
+              <option value="price-asc">Price ↑</option>
+              <option value="price-desc">Price ↓</option>
+              <option value="rating">Rating</option>
+            </select>
           </div>
         </div>
       </div>
 
-      {/* Grid */}
       <div className="mt-10">
         {filtered.length === 0 ? (
           <div className="grid place-items-center py-24 text-center">
