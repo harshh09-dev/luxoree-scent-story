@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /checkout
+Disallow: /cart
+Disallow: /order-success/
+
+Sitemap: https://luxoree-scent-story.lovable.app/sitemap.xml
