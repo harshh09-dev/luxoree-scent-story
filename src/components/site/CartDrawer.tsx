@@ -66,7 +66,7 @@ export function CartDrawer() {
         aria-modal="true"
         aria-labelledby="cart-drawer-title"
         aria-hidden={!drawerOpen}
-        {...(!drawerOpen ? { inert: "" as unknown as boolean } : {})}
+        {...(!drawerOpen ? { inert: true } : {})}
         className={`fixed right-0 top-0 z-[80] flex h-dvh w-full max-w-md flex-col border-l border-border/60 bg-background shadow-[0_0_60px_rgba(201,162,76,0.15)] transition-transform duration-500 ease-out ${
           drawerOpen ? "translate-x-0" : "translate-x-full"
         }`}
