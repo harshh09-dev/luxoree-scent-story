@@ -15,6 +15,7 @@ import { Nav } from "@/components/site/Nav";
 import { Footer } from "@/components/site/Footer";
 import { AnnouncementBar } from "@/components/site/AnnouncementBar";
 import { GrainAndCursorLight } from "@/components/site/GrainOverlay";
+import { CartDrawer } from "@/components/site/CartDrawer";
 
 function NotFoundComponent() {
   return (
@@ -121,6 +122,7 @@ function RootComponent() {
           <Outlet />
         </main>
         <Footer />
+        <CartDrawer />
       </div>
     </QueryClientProvider>
   );
