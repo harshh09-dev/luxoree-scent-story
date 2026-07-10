@@ -1,20 +1,53 @@
 import { Link } from "@tanstack/react-router";
 import { X, Minus, Plus, ShoppingBag, ArrowRight } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useCart } from "@/lib/cart";
+
+const FOCUSABLE =
+  'a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
 export function CartDrawer() {
   const { items, drawerOpen, closeDrawer, setQty, remove, subtotal } = useCart();
   const total = subtotal();
+  const panelRef = useRef<HTMLElement | null>(null);
+  const closeBtnRef = useRef<HTMLButtonElement | null>(null);
+  const previouslyFocused = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     if (!drawerOpen) return;
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && closeDrawer();
+    previouslyFocused.current = document.activeElement as HTMLElement | null;
+    // move focus into the drawer
+    const t = window.setTimeout(() => closeBtnRef.current?.focus(), 50);
+
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        closeDrawer();
+        return;
+      }
+      if (e.key !== "Tab" || !panelRef.current) return;
+      const nodes = Array.from(
+        panelRef.current.querySelectorAll<HTMLElement>(FOCUSABLE),
+      ).filter((el) => !el.hasAttribute("aria-hidden") && el.offsetParent !== null);
+      if (nodes.length === 0) return;
+      const first = nodes[0];
+      const last = nodes[nodes.length - 1];
+      const active = document.activeElement as HTMLElement | null;
+      if (e.shiftKey && active === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && active === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
     window.addEventListener("keydown", onKey);
     document.body.style.overflow = "hidden";
     return () => {
+      window.clearTimeout(t);
       window.removeEventListener("keydown", onKey);
       document.body.style.overflow = "";
+      previouslyFocused.current?.focus?.();
     };
   }, [drawerOpen, closeDrawer]);
 
@@ -28,26 +61,34 @@ export function CartDrawer() {
         aria-hidden
       />
       <aside
+        ref={panelRef}
         role="dialog"
         aria-modal="true"
-        aria-label="Shopping cart"
+        aria-labelledby="cart-drawer-title"
+        aria-hidden={!drawerOpen}
+        {...(!drawerOpen ? { inert: "" as unknown as boolean } : {})}
         className={`fixed right-0 top-0 z-[80] flex h-dvh w-full max-w-md flex-col border-l border-border/60 bg-background shadow-[0_0_60px_rgba(201,162,76,0.15)] transition-transform duration-500 ease-out ${
           drawerOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
+
         <div className="flex items-center justify-between border-b border-border/40 px-5 py-5">
           <div>
             <p className="text-[10px] uppercase tracking-[0.35em] text-gold">Your Cart</p>
-            <p className="font-display text-2xl text-ivory">{items.length === 0 ? "Empty" : `${items.length} item${items.length > 1 ? "s" : ""}`}</p>
+            <p id="cart-drawer-title" className="font-display text-2xl text-ivory">
+              {items.length === 0 ? "Empty" : `${items.length} item${items.length > 1 ? "s" : ""}`}
+            </p>
           </div>
           <button
+            ref={closeBtnRef}
             onClick={closeDrawer}
             aria-label="Close cart"
-            className="rounded-full p-2 text-ivory/70 hover:text-gold"
+            className="rounded-full p-2 text-ivory/70 hover:text-gold focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gold"
           >
             <X className="h-5 w-5" />
           </button>
         </div>
+
 
         <div className="flex-1 overflow-y-auto px-5 py-4">
           {items.length === 0 ? (
