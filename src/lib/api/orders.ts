@@ -1,5 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
-import type { CreateOrderInput, Order, OrderStatus, PaymentMethod, PaymentStatus } from "./types";
+import type { Address, CreateOrderInput, Order, OrderStatus, PaymentMethod, PaymentStatus } from "./types";
 
 type OrderRow = {
   id: string;
