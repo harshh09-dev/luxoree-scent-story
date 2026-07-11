@@ -41,7 +41,7 @@ function rowToOrder(order: OrderRow, items: OrderItemRow[]): Order {
       name: order.customer_name,
       email: order.customer_email,
       phone: order.customer_phone,
-      address: order.address,
+      address: order.address as Address,
     },
     lines: items.map((i) => ({
       slug: i.slug,
