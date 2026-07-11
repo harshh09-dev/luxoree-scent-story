@@ -72,7 +72,7 @@ export async function createOrder(input: CreateOrderInput): Promise<Order> {
       customer_name: input.customer.name,
       customer_email: input.customer.email,
       customer_phone: input.customer.phone,
-      address: input.customer.address as unknown as Record<string, unknown>,
+      address: input.customer.address as unknown as OrderRow["address"] & Record<string, unknown>,
       subtotal: input.subtotal,
       shipping: input.shipping,
       discount: input.discount,
