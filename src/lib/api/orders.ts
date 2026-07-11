@@ -69,6 +69,7 @@ export async function createOrder(input: CreateOrderInput): Promise<Order> {
     .from("orders")
     .insert({
       user_id: userId,
+      order_number: "PENDING", // overwritten by BEFORE INSERT trigger assign_order_number
       customer_name: input.customer.name,
       customer_email: input.customer.email,
       customer_phone: input.customer.phone,
