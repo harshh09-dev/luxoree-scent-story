@@ -8,7 +8,7 @@ type OrderRow = {
   customer_name: string;
   customer_email: string;
   customer_phone: string;
-  address: Order["customer"]["address"];
+  address: unknown;
   subtotal: number | string;
   shipping: number | string;
   discount: number | string;
