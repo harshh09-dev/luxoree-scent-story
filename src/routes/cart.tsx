@@ -15,7 +15,7 @@ export const Route = createFileRoute("/cart")({
 });
 
 function CartPage() {
-  const { items, setQty, remove, subtotal } = useCart();
+  const { items, setQty, remove, subtotal, clear } = useCart();
   const [coupon, setCoupon] = useState("");
   const [couponApplied, setCouponApplied] = useState<string | null>(null);
   const [couponErr, setCouponErr] = useState<string | null>(null);
@@ -58,8 +58,18 @@ function CartPage() {
 
   return (
     <div className="container-luxe py-16 md:py-24">
-      <p className="text-[11px] uppercase tracking-[0.4em] text-gold">Your Cart</p>
-      <h1 className="mt-2 font-display text-5xl text-ivory md:text-6xl">{items.length} item{items.length > 1 ? "s" : ""}</h1>
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <p className="text-[11px] uppercase tracking-[0.4em] text-gold">Your Cart</p>
+          <h1 className="mt-2 font-display text-5xl text-ivory md:text-6xl">{items.length} item{items.length > 1 ? "s" : ""}</h1>
+        </div>
+        <button
+          onClick={() => { if (confirm("Clear all items from your cart?")) clear(); }}
+          className="mt-3 text-[10px] uppercase tracking-[0.25em] text-ivory/60 hover:text-destructive"
+        >
+          Clear cart
+        </button>
+      </div>
 
       <div className="mt-12 grid gap-10 lg:grid-cols-[1fr_380px]">
         <ul className="divide-y divide-border/40 border-y border-border/40">

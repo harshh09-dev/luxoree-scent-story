@@ -1,8 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { z } from "zod";
-import { Search } from "lucide-react";
-import { perfumes, type Gender } from "@/data/perfumes";
+import { Search, X } from "lucide-react";
+import { perfumes, FAMILY_TAGS, type Gender, type FamilyTag } from "@/data/perfumes";
 import { ProductCard } from "@/components/site/ProductCard";
 import { Reveal } from "@/components/site/Reveal";
 import { SITE } from "@/lib/site";
@@ -35,9 +35,16 @@ function ShopPage() {
   const setTab = (k: "all" | Gender) => navigate({ search: { g: k } });
   const [sort, setSort] = useState<Sort>("popularity");
   const [q, setQ] = useState("");
+  const [activeTags, setActiveTags] = useState<FamilyTag[]>([]);
+
+  const toggleTag = (t: FamilyTag) =>
+    setActiveTags((s) => (s.includes(t) ? s.filter((x) => x !== t) : [...s, t]));
 
   const filtered = useMemo(() => {
     let list = perfumes.filter((p) => (tab === "all" ? true : p.gender === tab));
+    if (activeTags.length > 0) {
+      list = list.filter((p) => activeTags.every((t) => p.familyTags.includes(t)));
+    }
     if (q.trim()) {
       const needle = q.toLowerCase();
       list = list.filter((p) =>
@@ -53,7 +60,7 @@ function ShopPage() {
       default: list = [...list].sort((a, b) => b.reviewCount - a.reviewCount);
     }
     return list;
-  }, [tab, sort, q]);
+  }, [tab, sort, q, activeTags]);
 
   const tabs: { k: "all" | Gender; label: string; count: number }[] = [
     { k: "all", label: "All", count: perfumes.length },
@@ -61,6 +68,8 @@ function ShopPage() {
     { k: "women", label: "For Her", count: perfumes.filter((p) => p.gender === "women").length },
     { k: "unisex", label: "Unisex", count: perfumes.filter((p) => p.gender === "unisex").length },
   ];
+
+  const resetAll = () => { setQ(""); setTab("all"); setActiveTags([]); };
 
   return (
     <div className="container-luxe py-16 md:py-24">
@@ -117,6 +126,36 @@ function ShopPage() {
             </select>
           </div>
         </div>
+
+        {/* Family filter chips */}
+        <div className="mt-3 flex flex-wrap gap-1.5">
+          <span className="mr-1 self-center text-[10px] uppercase tracking-[0.25em] text-ivory/50">Family:</span>
+          {FAMILY_TAGS.map((t) => {
+            const active = activeTags.includes(t);
+            return (
+              <button
+                key={t}
+                onClick={() => toggleTag(t)}
+                aria-pressed={active}
+                className={`rounded-full border px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] transition-all ${
+                  active
+                    ? "border-gold bg-gold/15 text-gold"
+                    : "border-border/60 text-ivory/60 hover:border-gold/50 hover:text-gold"
+                }`}
+              >
+                {t}
+              </button>
+            );
+          })}
+          {(activeTags.length > 0 || q || tab !== "all") && (
+            <button
+              onClick={resetAll}
+              className="ml-1 inline-flex items-center gap-1 rounded-full border border-destructive/40 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-destructive hover:bg-destructive/10"
+            >
+              <X className="h-3 w-3" /> Clear
+            </button>
+          )}
+        </div>
       </div>
 
       <div className="mt-10">
@@ -124,9 +163,9 @@ function ShopPage() {
           <div className="grid place-items-center py-24 text-center">
             <div>
               <p className="font-display text-3xl text-ivory">No fragrances found</p>
-              <p className="mt-2 text-sm text-ivory/60">Try a different search or clear the filter.</p>
+              <p className="mt-2 text-sm text-ivory/60">Try a different search or clear the filters.</p>
               <button
-                onClick={() => { setQ(""); setTab("all"); }}
+                onClick={resetAll}
                 className="mt-6 rounded-sm border border-gold px-6 py-3 text-xs font-semibold uppercase tracking-[0.25em] text-gold hover:bg-gold hover:text-background"
               >
                 Reset filters
@@ -134,11 +173,16 @@ function ShopPage() {
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 lg:gap-6">
-            {filtered.map((p, i) => (
-              <ProductCard key={p.slug} p={p} index={i} />
-            ))}
-          </div>
+          <>
+            <p className="mb-4 text-[11px] uppercase tracking-[0.25em] text-ivory/50">
+              {filtered.length} fragrance{filtered.length === 1 ? "" : "s"}
+            </p>
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 lg:gap-6">
+              {filtered.map((p, i) => (
+                <ProductCard key={p.slug} p={p} index={i} />
+              ))}
+            </div>
+          </>
         )}
       </div>
     </div>
