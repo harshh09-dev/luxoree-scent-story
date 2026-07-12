@@ -1,11 +1,13 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Search, User, ShoppingBag, Menu, X } from "lucide-react";
+import { Search, User, ShoppingBag, Menu, X, Heart } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useCart } from "@/lib/cart";
+import { useWishlist } from "@/lib/wishlist";
 
 const links = [
   { to: "/" as const, label: "Home" },
   { to: "/shop" as const, label: "Shop" },
+  { to: "/collections" as const, label: "Collections" },
   { to: "/about" as const, label: "About" },
 ];
 
@@ -15,6 +17,7 @@ export function Nav() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const openDrawer = useCart((s) => s.openDrawer);
   const count = useCart((s) => s.items.reduce((n, i) => n + i.qty, 0));
+  const wishCount = useWishlist((s) => s.slugs.length);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -52,6 +55,18 @@ export function Nav() {
 
         <div className="flex items-center gap-1.5 md:gap-3">
           <IconBtn label="Search"><Search className="h-[18px] w-[18px]" /></IconBtn>
+          <Link
+            to="/wishlist"
+            aria-label={`Wishlist (${wishCount} items)`}
+            className="relative rounded-full p-2 text-ivory transition-colors hover:text-gold focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gold"
+          >
+            <Heart className={`h-[18px] w-[18px] ${wishCount > 0 ? "fill-gold text-gold" : ""}`} />
+            {wishCount > 0 && (
+              <span className="absolute -right-0.5 -top-0.5 flex h-[16px] min-w-[16px] items-center justify-center rounded-full bg-gold px-1 text-[9px] font-semibold text-background">
+                {wishCount}
+              </span>
+            )}
+          </Link>
           <IconBtn label="Account"><User className="h-[18px] w-[18px]" /></IconBtn>
           <button
             aria-label={`Cart (${count} items)`}
@@ -93,6 +108,12 @@ export function Nav() {
               {l.label}
             </Link>
           ))}
+          <Link
+            to="/wishlist"
+            className="rounded-md px-3 py-3 text-sm uppercase tracking-[0.22em] text-ivory/85 hover:bg-elevated hover:text-gold"
+          >
+            Wishlist {wishCount > 0 && <span className="text-gold">({wishCount})</span>}
+          </Link>
         </nav>
       </div>
     </header>
