@@ -1,11 +1,13 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { Loader2, Truck, Wallet, Clock } from "lucide-react";
+import { Loader2, Truck, Wallet, Clock, MessageCircle } from "lucide-react";
 import { z } from "zod";
 import { useCart } from "@/lib/cart";
 import { createOrder } from "@/lib/api/orders";
 import type { PaymentMethod } from "@/lib/api/types";
 import { SITE } from "@/lib/site";
+
+type UIPaymentMethod = PaymentMethod | "whatsapp";
 
 export const Route = createFileRoute("/checkout")({
   head: () => ({
