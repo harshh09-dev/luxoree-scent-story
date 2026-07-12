@@ -59,6 +59,21 @@ function CheckoutPage() {
 
   const set = <K extends keyof typeof form>(k: K, v: string) => setForm((f) => ({ ...f, [k]: v }));
 
+  const buildWhatsAppUrl = (orderId: string) => {
+    const linesText = items.map((i) => `• ${i.name} (${i.size}) × ${i.qty} — ₹${i.unitPrice * i.qty}`).join("%0A");
+    const msg =
+      `Hi Luxorée! I'd like to confirm my order.%0A%0A` +
+      `Order: *${orderId}*%0A` +
+      `Name: ${form.name}%0A` +
+      `Phone: +91${form.phone}%0A` +
+      `Address: ${form.line1}${form.line2 ? ", " + form.line2 : ""}${form.landmark ? " (Near " + form.landmark + ")" : ""}, ${form.city}, ${form.state} — ${form.pincode}%0A%0A` +
+      `Items:%0A${linesText}%0A%0A` +
+      `Subtotal: ₹${sub}%0AShipping: ${shipping === 0 ? "Free" : "₹" + shipping}%0A*Total: ₹${total}*%0A%0A` +
+      `Please confirm and share payment link.`;
+    const phone = (SITE.whatsapp ?? "").replace(/\D/g, "");
+    return `https://wa.me/${phone}?text=${msg}`;
+  };
+
   const placeOrder = async (e: React.FormEvent) => {
     e.preventDefault();
     setErr(null);
@@ -70,13 +85,19 @@ function CheckoutPage() {
     }
 
     if (payment === "razorpay") {
-      setErr("Razorpay is coming soon. Please choose Cash on Delivery for now.");
+      setErr("Razorpay is coming soon. Please choose Cash on Delivery or WhatsApp for now.");
       return;
     }
 
     setBusy(true);
     try {
       const c = parsed.data;
+      const combinedNotes = [
+        c.landmark ? `Landmark: ${c.landmark}` : null,
+        payment === "whatsapp" ? "Customer chose WhatsApp payment flow." : null,
+        c.notes ? c.notes : null,
+      ].filter(Boolean).join(" • ");
+
       const order = await createOrder({
         customer: {
           name: c.name,
@@ -98,9 +119,13 @@ function CheckoutPage() {
         shipping,
         discount: 0,
         total,
-        paymentMethod: payment,
-        notes: c.notes,
+        paymentMethod: "cod",
+        notes: combinedNotes || undefined,
       });
+
+      if (payment === "whatsapp") {
+        window.open(buildWhatsAppUrl(order.id), "_blank", "noopener,noreferrer");
+      }
       clear();
       navigate({ to: "/order-success/$id", params: { id: order.id } });
     } catch (e: unknown) {
@@ -126,6 +151,7 @@ function CheckoutPage() {
               <Field label="Email" type="email" value={form.email} onChange={(v) => set("email", v)} required className="md:col-span-2" />
               <Field label="Address line 1" value={form.line1} onChange={(v) => set("line1", v)} required className="md:col-span-2" />
               <Field label="Address line 2 (optional)" value={form.line2} onChange={(v) => set("line2", v)} className="md:col-span-2" />
+              <Field label="Landmark (optional)" value={form.landmark} onChange={(v) => set("landmark", v)} placeholder="Near ___" className="md:col-span-2" />
               <Field label="City" value={form.city} onChange={(v) => set("city", v)} required />
               <Field label="State" value={form.state} onChange={(v) => set("state", v)} required />
               <Field label="Pincode" value={form.pincode} onChange={(v) => set("pincode", v)} required placeholder="6 digits" />
@@ -137,7 +163,7 @@ function CheckoutPage() {
                 onChange={(e) => set("notes", e.target.value)}
                 rows={3}
                 maxLength={500}
-                placeholder="Landmark, delivery preferences, gift wrap…"
+                placeholder="Delivery preferences, gift wrap…"
                 className="mt-1 w-full rounded-sm border border-border bg-background/60 px-3 py-2.5 text-sm text-ivory placeholder:text-ivory/40 focus:border-gold focus:outline-none"
               />
             </div>
@@ -154,6 +180,13 @@ function CheckoutPage() {
                 label="Cash on Delivery"
                 desc="Pay in cash when your order arrives. No online payment needed."
                 badge="Recommended"
+              />
+              <PayOption
+                selected={payment === "whatsapp"}
+                onSelect={() => setPayment("whatsapp")}
+                icon={MessageCircle}
+                label="Order via WhatsApp"
+                desc="Confirm your order on WhatsApp and receive a UPI payment link from us."
               />
               <PayOption
                 selected={payment === "razorpay"}
