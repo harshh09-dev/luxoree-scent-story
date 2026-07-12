@@ -70,7 +70,7 @@ function CheckoutPage() {
       `Items:%0A${linesText}%0A%0A` +
       `Subtotal: ₹${sub}%0AShipping: ${shipping === 0 ? "Free" : "₹" + shipping}%0A*Total: ₹${total}*%0A%0A` +
       `Please confirm and share payment link.`;
-    const phone = (SITE.whatsapp ?? "").replace(/\D/g, "");
+    const phone = SITE.owner.phoneE164.replace(/\D/g, "");
     return `https://wa.me/${phone}?text=${msg}`;
   };
 
