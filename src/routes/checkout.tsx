@@ -25,6 +25,7 @@ const customerSchema = z.object({
   phone: z.string().trim().regex(/^[6-9]\d{9}$/, "Enter a 10-digit Indian mobile number"),
   line1: z.string().trim().min(4, "Address required").max(200),
   line2: z.string().trim().max(200).optional(),
+  landmark: z.string().trim().max(120).optional(),
   city: z.string().trim().min(2).max(80),
   state: z.string().trim().min(2).max(80),
   pincode: z.string().trim().regex(/^\d{6}$/, "Valid 6-digit pincode required"),
@@ -34,12 +35,12 @@ const customerSchema = z.object({
 function CheckoutPage() {
   const { items, subtotal, clear } = useCart();
   const navigate = useNavigate();
-  const [payment, setPayment] = useState<PaymentMethod>("cod");
+  const [payment, setPayment] = useState<UIPaymentMethod>("cod");
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const [form, setForm] = useState({
     name: "", email: "", phone: "",
-    line1: "", line2: "", city: "", state: "Rajasthan", pincode: "",
+    line1: "", line2: "", landmark: "", city: "", state: "Rajasthan", pincode: "",
     notes: "",
   });
 
