@@ -16,6 +16,7 @@ import { Footer } from "@/components/site/Footer";
 import { AnnouncementBar } from "@/components/site/AnnouncementBar";
 import { GrainAndCursorLight } from "@/components/site/GrainOverlay";
 import { CartDrawer } from "@/components/site/CartDrawer";
+import { Toaster } from "@/components/ui/sonner";
 
 function NotFoundComponent() {
   return (
