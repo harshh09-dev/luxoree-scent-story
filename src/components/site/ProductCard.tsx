@@ -98,7 +98,7 @@ export function ProductCard({ p, index = 0 }: { p: Perfume; index?: number }) {
 
         {/* Size selector */}
         <div className="mt-3 inline-flex self-start rounded-sm border border-border/60 text-[10px] uppercase tracking-[0.2em]">
-          {(["20ml", "50ml"] as CartSize[]).map((s) => (
+          {(["20ml", "50ml"] as ShoppableSize[]).map((s) => (
             <button
               key={s}
               type="button"
