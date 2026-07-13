@@ -19,7 +19,7 @@ type CartState = {
   items: CartItem[];
   drawerOpen: boolean;
   add: (p: Perfume, size: Exclude<CartSize, "Set">, qty?: number) => void;
-  addBundle: (bundle: Omit<CartItem, "qty"> & { qty?: number }) => void;
+  addBundle: (bundle: Omit<CartItem, "qty" | "size"> & { qty?: number; size?: CartSize }) => void;
   remove: (slug: string, size: CartSize) => void;
   setQty: (slug: string, size: CartSize, qty: number) => void;
   clear: () => void;

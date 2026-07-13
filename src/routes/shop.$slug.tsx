@@ -83,7 +83,7 @@ function ProductNotFound() {
 
 function ProductPage() {
   const p = Route.useLoaderData();
-  const [size, setSize] = useState<CartSize>("50ml");
+  const [size, setSize] = useState<"20ml" | "50ml">("50ml");
   const [qty, setQty] = useState(1);
   const [tab, setTab] = useState<"description" | "notes" | "details" | "reviews">("description");
   const add = useCart((s) => s.add);

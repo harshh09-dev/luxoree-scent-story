@@ -3,14 +3,16 @@ import { Heart, ShoppingBag, Star } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import type { Perfume } from "@/data/perfumes";
-import { useCart, type CartSize } from "@/lib/cart";
+import { useCart } from "@/lib/cart";
 import { useWishlist } from "@/lib/wishlist";
+
+type ShoppableSize = "20ml" | "50ml";
 
 export function ProductCard({ p, index = 0 }: { p: Perfume; index?: number }) {
   const addToCart = useCart((s) => s.add);
   const has = useWishlist((s) => s.has(p.slug));
   const toggle = useWishlist((s) => s.toggle);
-  const [size, setSize] = useState<CartSize>("50ml");
+  const [size, setSize] = useState<ShoppableSize>("50ml");
 
   const price = size === "50ml" ? p.price : p.trialPrice;
   const mrp = size === "50ml" ? p.mrp : undefined;
