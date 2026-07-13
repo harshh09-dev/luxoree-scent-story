@@ -22,7 +22,9 @@ function CartPage() {
 
   const sub = subtotal();
   const discount = couponApplied === "LUXORÉE10" ? Math.round(sub * 0.1) : 0;
-  const shipping = sub === 0 ? 0 : sub - discount >= SITE.shipping.freeShippingOver ? 0 : SITE.shipping.flatRate;
+  // Delivery is quoted from the pincode at checkout: free within 3 km of Mahesh Nagar,
+  // otherwise confirmed after address verification.
+  const shipping = 0;
   const total = sub - discount + shipping;
 
   const applyCoupon = () => {
