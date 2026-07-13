@@ -1,13 +1,14 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { Loader2, Truck, Wallet, Clock, MessageCircle } from "lucide-react";
+import { Loader2, Truck, Wallet, Clock, MessageCircle, MapPin } from "lucide-react";
 import { z } from "zod";
 import { useCart } from "@/lib/cart";
 import { createOrder } from "@/lib/api/orders";
 import type { PaymentMethod } from "@/lib/api/types";
 import { SITE } from "@/lib/site";
+import { quoteDelivery, DELIVERY } from "@/lib/delivery";
 
-type UIPaymentMethod = PaymentMethod | "whatsapp";
+type UIPaymentMethod = PaymentMethod;
 
 export const Route = createFileRoute("/checkout")({
   head: () => ({
@@ -45,7 +46,8 @@ function CheckoutPage() {
   });
 
   const sub = subtotal();
-  const shipping = sub === 0 ? 0 : sub >= SITE.shipping.freeShippingOver ? 0 : SITE.shipping.flatRate;
+  const delivery = quoteDelivery(form.pincode);
+  const shipping = delivery.amount; // outside radius = 0 now, confirmed before dispatch
   const total = sub + shipping;
 
   if (items.length === 0) {
@@ -68,7 +70,7 @@ function CheckoutPage() {
       `Phone: +91${form.phone}%0A` +
       `Address: ${form.line1}${form.line2 ? ", " + form.line2 : ""}${form.landmark ? " (Near " + form.landmark + ")" : ""}, ${form.city}, ${form.state} — ${form.pincode}%0A%0A` +
       `Items:%0A${linesText}%0A%0A` +
-      `Subtotal: ₹${sub}%0AShipping: ${shipping === 0 ? "Free" : "₹" + shipping}%0A*Total: ₹${total}*%0A%0A` +
+      `Subtotal: ₹${sub}%0AShipping: ${delivery.kind === "free" ? "Free (within 3 km)" : "To be confirmed"}%0A*Total: ₹${total}*%0A%0A` +
       `Please confirm and share payment link.`;
     const phone = SITE.owner.phoneE164.replace(/\D/g, "");
     return `https://wa.me/${phone}?text=${msg}`;
@@ -94,10 +96,12 @@ function CheckoutPage() {
       const c = parsed.data;
       const combinedNotes = [
         c.landmark ? `Landmark: ${c.landmark}` : null,
+        delivery.kind === "outside" ? `Delivery: outside 3 km radius — ${DELIVERY.outsideCopy}` : `Delivery: free (within 3 km of Mahesh Nagar)`,
         payment === "whatsapp" ? "Customer chose WhatsApp payment flow." : null,
         c.notes ? c.notes : null,
       ].filter(Boolean).join(" • ");
 
+      // 1) Persist the order FIRST — every payment method goes through the same pipeline.
       const order = await createOrder({
         customer: {
           name: c.name,
@@ -119,10 +123,11 @@ function CheckoutPage() {
         shipping,
         discount: 0,
         total,
-        paymentMethod: "cod",
+        paymentMethod: payment,
         notes: combinedNotes || undefined,
       });
 
+      // 2) Payment-specific action, only after the order exists.
       if (payment === "whatsapp") {
         window.open(buildWhatsAppUrl(order.id), "_blank", "noopener,noreferrer");
       }
@@ -217,7 +222,16 @@ function CheckoutPage() {
 
           <div className="mt-4 space-y-2 border-t border-border/40 pt-4 text-sm">
             <div className="flex justify-between text-ivory/70"><span>Subtotal</span><span>₹{sub}</span></div>
-            <div className="flex justify-between text-ivory/70"><span>Shipping</span><span>{shipping === 0 ? "Free" : `₹${shipping}`}</span></div>
+            <div className="flex justify-between text-ivory/70">
+              <span>Shipping</span>
+              <span className={delivery.kind === "free" ? "text-gold" : "text-ivory/60"}>{delivery.label}</span>
+            </div>
+            <div className={`flex items-start gap-2 rounded-sm border p-3 text-[11px] leading-relaxed ${
+              delivery.kind === "free" ? "border-gold/40 bg-gold/10 text-gold" : "border-border/60 bg-background/40 text-ivory/70"
+            }`}>
+              <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+              <span>{delivery.note}</span>
+            </div>
             <div className="mt-3 flex items-baseline justify-between border-t border-border/40 pt-3">
               <span className="text-base text-ivory">Total</span>
               <span className="font-display text-3xl text-gold">₹{total}</span>
