@@ -7,7 +7,7 @@ import {
 import { bySlug, perfumes, type Review } from "@/data/perfumes";
 import { ProductCard } from "@/components/site/ProductCard";
 import { Reveal } from "@/components/site/Reveal";
-import { useCart, type CartSize } from "@/lib/cart";
+import { useCart } from "@/lib/cart";
 import { submitReview } from "@/lib/api/reviews";
 import { SITE } from "@/lib/site";
 
