@@ -1,10 +1,30 @@
 import { Link } from "@tanstack/react-router";
-import { Instagram, MessageCircle, Mail, MapPin, ShieldCheck } from "lucide-react";
+import { Instagram, MessageCircle, Mail, MapPin, ShieldCheck, Truck, Wallet, Package } from "lucide-react";
 import { SITE } from "@/lib/site";
+
+const trustBadges = [
+  { icon: Truck, label: "Free Delivery within 3 km of Mahesh Nagar, Jaipur" },
+  { icon: Wallet, label: "Cash on Delivery Available" },
+  { icon: ShieldCheck, label: "Secure Payments" },
+  { icon: Package, label: "Premium Packaging" },
+];
 
 export function Footer() {
   return (
     <footer className="relative mt-32 border-t border-border/40 bg-black/40">
+      <div className="border-b border-border/40">
+        <div className="container-luxe grid gap-4 py-8 md:grid-cols-2 lg:grid-cols-4">
+          {trustBadges.map(({ icon: Icon, label }) => (
+            <div key={label} className="flex items-start gap-3">
+              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-gold/40 bg-gold/10">
+                <Icon className="h-4 w-4 text-gold" />
+              </span>
+              <p className="text-[11px] uppercase leading-relaxed tracking-[0.22em] text-ivory/75">{label}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
       <div className="container-luxe grid gap-12 py-16 md:grid-cols-4">
         <div>
           <div className="font-display text-2xl tracking-[0.35em] text-gold">LUXORÉE</div>
@@ -13,29 +33,16 @@ export function Footer() {
             Hand-blended premium fragrances. Made in {SITE.owner.location.split(",")[0]}. Loved across India.
           </p>
           <div className="mt-6 flex gap-3">
-            <a
-              href={SITE.owner.instagramUrl}
-              target="_blank"
-              rel="noreferrer"
-              aria-label="Instagram"
-              className="grid h-9 w-9 place-items-center rounded-full border border-border text-ivory/70 transition-colors hover:border-gold hover:text-gold"
-            >
+            <a href={SITE.owner.instagramUrl} target="_blank" rel="noreferrer" aria-label="Instagram"
+              className="grid h-9 w-9 place-items-center rounded-full border border-border text-ivory/70 transition-colors hover:border-gold hover:text-gold">
               <Instagram className="h-4 w-4" />
             </a>
-            <a
-              href={SITE.owner.whatsappUrl}
-              target="_blank"
-              rel="noreferrer"
-              aria-label="WhatsApp"
-              className="grid h-9 w-9 place-items-center rounded-full border border-border text-ivory/70 transition-colors hover:border-gold hover:text-gold"
-            >
+            <a href={SITE.owner.whatsappUrl} target="_blank" rel="noreferrer" aria-label="WhatsApp"
+              className="grid h-9 w-9 place-items-center rounded-full border border-border text-ivory/70 transition-colors hover:border-gold hover:text-gold">
               <MessageCircle className="h-4 w-4" />
             </a>
-            <a
-              href={`mailto:${SITE.owner.email}`}
-              aria-label="Email"
-              className="grid h-9 w-9 place-items-center rounded-full border border-border text-ivory/70 transition-colors hover:border-gold hover:text-gold"
-            >
+            <a href={`mailto:${SITE.owner.email}`} aria-label="Email"
+              className="grid h-9 w-9 place-items-center rounded-full border border-border text-ivory/70 transition-colors hover:border-gold hover:text-gold">
               <Mail className="h-4 w-4" />
             </a>
           </div>
@@ -45,9 +52,9 @@ export function Footer() {
           <h3 className="mb-5 text-[11px] font-semibold uppercase tracking-[0.3em] text-gold">Shop</h3>
           <ul className="space-y-3 text-sm text-ivory/75">
             <li><Link to="/shop" className="hover:text-gold">All Fragrances</Link></li>
-            <li><Link to="/shop" search={{ g: "men" }} className="hover:text-gold">For Him</Link></li>
-            <li><Link to="/shop" search={{ g: "women" }} className="hover:text-gold">For Her</Link></li>
-            <li><Link to="/shop" search={{ g: "unisex" }} className="hover:text-gold">Unisex</Link></li>
+            <li><Link to="/collections" className="hover:text-gold">Collections</Link></li>
+            <li><Link to="/collections/$slug" params={{ slug: "discovery-sets" }} className="hover:text-gold">Discovery Sets</Link></li>
+            <li><Link to="/collections/$slug" params={{ slug: "gift-boxes" }} className="hover:text-gold">Gift Collections</Link></li>
             <li><Link to="/cart" className="hover:text-gold">Cart</Link></li>
           </ul>
         </div>
@@ -85,10 +92,6 @@ export function Footer() {
             <li className="flex items-start gap-2">
               <MapPin className="mt-0.5 h-4 w-4 text-gold" />
               {SITE.owner.location}
-            </li>
-            <li className="flex items-start gap-2">
-              <ShieldCheck className="mt-0.5 h-4 w-4 text-gold" />
-              Cash on Delivery • Secure Packaging
             </li>
           </ul>
         </div>
