@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { Perfume } from "@/data/perfumes";
 
-export type CartSize = "20ml" | "50ml";
+export type CartSize = "20ml" | "50ml" | "Set";
 
 export type CartItem = {
   slug: string;
@@ -11,12 +11,15 @@ export type CartItem = {
   size: CartSize;
   unitPrice: number;
   qty: number;
+  /** Optional inventory of components for bundles (Discovery / Gift sets). */
+  bundleOf?: { slug: string; name: string; size: "20ml" | "50ml" }[];
 };
 
 type CartState = {
   items: CartItem[];
   drawerOpen: boolean;
-  add: (p: Perfume, size: CartSize, qty?: number) => void;
+  add: (p: Perfume, size: Exclude<CartSize, "Set">, qty?: number) => void;
+  addBundle: (bundle: Omit<CartItem, "qty" | "size"> & { qty?: number; size?: CartSize }) => void;
   remove: (slug: string, size: CartSize) => void;
   setQty: (slug: string, size: CartSize, qty: number) => void;
   clear: () => void;
@@ -45,13 +48,15 @@ export const useCart = create<CartState>()(
             };
           }
           return {
-            items: [
-              ...s.items,
-              { slug: p.slug, name: p.name, image: p.image, size, unitPrice, qty },
-            ],
+            items: [...s.items, { slug: p.slug, name: p.name, image: p.image, size, unitPrice, qty }],
             drawerOpen: true,
           };
         }),
+      addBundle: (b) =>
+        set((s) => ({
+          items: [...s.items, { ...b, size: "Set", qty: b.qty ?? 1 }],
+          drawerOpen: true,
+        })),
       remove: (slug, size) =>
         set((s) => ({ items: s.items.filter((i) => !(i.slug === slug && i.size === size)) })),
       setQty: (slug, size, qty) =>

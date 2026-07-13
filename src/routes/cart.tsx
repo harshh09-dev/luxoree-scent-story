@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Minus, Plus, X, ArrowRight, ShoppingBag, Tag } from "lucide-react";
 import { useState } from "react";
 import { useCart } from "@/lib/cart";
-import { SITE } from "@/lib/site";
+
 
 export const Route = createFileRoute("/cart")({
   head: () => ({
@@ -22,7 +22,9 @@ function CartPage() {
 
   const sub = subtotal();
   const discount = couponApplied === "LUXORÉE10" ? Math.round(sub * 0.1) : 0;
-  const shipping = sub === 0 ? 0 : sub - discount >= SITE.shipping.freeShippingOver ? 0 : SITE.shipping.flatRate;
+  // Delivery is quoted from the pincode at checkout: free within 3 km of Mahesh Nagar,
+  // otherwise confirmed after address verification.
+  const shipping = 0;
   const total = sub - discount + shipping;
 
   const applyCoupon = () => {
@@ -134,7 +136,10 @@ function CartPage() {
           <div className="mt-6 space-y-3 text-sm">
             <Row label="Subtotal" value={`₹${sub}`} />
             {discount > 0 && <Row label={`Discount (${couponApplied})`} value={`-₹${discount}`} accent />}
-            <Row label={shipping === 0 ? "Shipping (free)" : "Shipping"} value={shipping === 0 ? "Free" : `₹${shipping}`} />
+            <Row label="Shipping" value="Calculated at checkout" />
+            <p className="text-[11px] leading-relaxed text-ivory/50">
+              Free delivery within 3 km of Mahesh Nagar, Jaipur. Outside the radius, shipping is confirmed after address verification.
+            </p>
             <div className="mt-4 border-t border-border/40 pt-4">
               <Row label={<span className="text-base">Total</span>} value={<span className="font-display text-3xl text-gold">₹{total}</span>} />
             </div>

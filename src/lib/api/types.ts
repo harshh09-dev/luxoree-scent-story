@@ -26,7 +26,7 @@ export type OrderLine = {
   qty: number;
 };
 
-export type PaymentMethod = "cod" | "razorpay";
+export type PaymentMethod = "cod" | "razorpay" | "whatsapp";
 
 export type PaymentStatus = "pending" | "paid" | "failed" | "refunded";
 export type OrderStatus =
